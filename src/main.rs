@@ -1,7 +1,6 @@
 use std::env;
 
 mod battle;
-mod omikuji;
 
 fn main() {
     let args: Vec<String> = env::args().collect();
@@ -12,10 +11,9 @@ fn main() {
         select = "nothing"
     }
     match select {
-        "omikuji" => omikuji::run(),
         "battle" => {
-            let scene: battle::Scene = battle::Scene::new();
-            println!("{:?}", scene);
+            let monster: battle::Monster = battle::Monster::new();
+            println!("{:?}", monster);
         }
         _ => println!("Something else!"),
     }
