@@ -5,10 +5,11 @@ use rand::Rng;
 pub struct Monster {
     pub name: String,
     pub spec: Spec,
+    pub attribute: String,
 }
 
 #[derive(Debug)]
-struct Spec {
+pub struct Spec {
     pub hit_point: i32,
     pub magic_point: i32,
     pub attack: Attack, // 攻撃バリエーション
@@ -27,7 +28,7 @@ impl Spec {
 }
 
 #[derive(Debug)]
-struct Attack {
+pub struct Attack {
     pub power: i32,   // 単純攻撃(mpが使用する魔法の消費mpよりも低ければ使用するしかない)
     pub magic: Magic, // 魔法能力
 }
@@ -41,7 +42,7 @@ impl Attack {
 
 // 今は一種類
 #[derive(Debug)]
-struct Magic {
+pub struct Magic {
     pub name: String,
     pub consume_magic_point_amount: i32, // 消費するMP量
     pub magic_power: i32,                // 魔法攻撃力
@@ -56,14 +57,13 @@ enum MagicType {
 }
 
 impl Magic {
-    fn new() -> Self {
-        let types = ["fire", "frozon", "thunder", "wind"];
-        let number: usize = rand::thread_rng().gen_range(0, 5);
-        let magic_type: MagicType = match types[number] {
+    fn new(attribute: &str) -> Self {
+        let magic_type: MagicType = match attribute {
             "fire" => MagicType::Fire(String::from("Fire"), 1500, 30), // TODO: 対属性攻撃力上乗せ
             "water" => MagicType::Frozen(String::from("Blizzard"), 1500, 30),
             "thunder" => MagicType::Thunder(String::from("Thunder"), 1500, 30),
             "wind" => MagicType::Wind(String::from("Aero"), 1500, 30),
+            _ => MagicType::Fire(String::from("Fire"), 1500, 30),
         };
 
         let (name, consume_magic_point_amount, magic_power) = match magic_type {
@@ -90,9 +90,16 @@ impl Magic {
 }
 
 impl Monster {
+    fn get_attribute<'a>() -> &'a str {
+        let attributes = ["fire", "frozon", "thunder", "wind"];
+        let number: usize = rand::thread_rng().gen_range(0, 4);
+        attributes[number]
+    }
+
     pub fn new() -> Self {
         // Magic constructor :
-        let magic: Magic = Magic::new();
+        let attribute = Self::get_attribute();
+        let magic = Magic::new(attribute);
 
         // Attack constroctor :
         let attack: Attack = Attack::new(magic);
@@ -104,7 +111,8 @@ impl Monster {
         let number: usize = rand::thread_rng().gen_range(0, 5);
         let monster: Monster = Monster {
             name: monster_names[number].to_string(),
-            spec: spec,
+            spec,
+            attribute: attribute.to_string(),
         };
         println!("{} has appeared!!", monster.name);
         monster
