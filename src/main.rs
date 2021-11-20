@@ -1,5 +1,6 @@
 use std::env;
 
+mod battle;
 mod omikuji;
 
 fn main() {
@@ -12,6 +13,10 @@ fn main() {
     }
     match select {
         "omikuji" => omikuji::run(),
+        "battle" => {
+            let scene: battle::Scene = battle::Scene::new();
+            println!("{:?}", scene);
+        }
         _ => println!("Something else!"),
     }
 }

@@ -1,1 +1,2 @@
+mod battle;
 mod omikuji;
