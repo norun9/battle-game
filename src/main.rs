@@ -1,57 +1,64 @@
-mod battle;
-use battle::Common;
 extern crate rand;
 use rand::Rng;
 
-fn main() {
-    let mut brave: &mut battle::Brave = Common::new();
-    println!("{:?}", brave);
-    let mut monster: &mut battle::Monster = Common::new();
-    println!("{:?}", monster);
+mod battle;
+use battle::Action;
+use battle::Common;
 
-    let turn_condition: bool = true;
+fn main() {
+    let mut brave: battle::Brave = Common::new();
+    let mut_brave: &mut battle::Brave = &mut brave;
+    let mut monster: battle::Monster = Common::new();
+    let mut_monster: &mut battle::Monster = &mut monster;
+
+    let mut turn_condition: bool = true;
     loop {
-        let mut action: battle::Action;
+        let turn: String;
+        let mut is_attack: bool = false;
+        let mut is_magic: bool = false;
         if turn_condition {
             // 勇者ターン
-            action.turn = String::from("brave");
+            turn = String::from("brave");
             let mut command = String::new();
             loop {
-                println!("攻撃方法を選択してください。【 attack 】【 magic 】");
+                println!("攻撃方法を選択してください。【 attack 】or【 magic 】\n");
                 std::io::stdin().read_line(&mut command).ok();
-                println!(">");
+                println!("");
+                assert_eq!(command, "attack");
                 if command != "" {
                     if command == "attack" {
-                        action.attack = Some(brave.spec.attack.power);
+                        is_attack = true;
                     }
                     if command == "magic" {
-                        action.magic = Some(brave.spec.attack.magic);
+                        is_magic = true;
                     }
                     break;
                 }
             }
-            println!("勇者が選んだのは【 {} 】です", command);
         } else {
-            // モンスターターン
-            action.turn = String::from("monster");
+            // 魔物ターン
+            turn = String::from("monster");
             let commands = ["attack", "magic"];
             let number: usize = rand::thread_rng().gen_range(0, 2);
             if commands[number] == "attack" {
-                action.attack = Some(brave.spec.attack.power);
+                is_attack = true;
             }
             if commands[number] == "magic" {
-                action.magic = Some(brave.spec.attack.magic);
+                is_magic = true;
             }
-            println!("モンスターが選んだのは【 {} 】です", commands[number]);
         }
 
-        Common::action(action, brave, monster);
+        let action: battle::Action = battle::Action::new(turn, is_attack, is_magic);
+        Action::attack(action, mut_brave, mut_monster);
 
-        if brave.spec.hit_point <= 0 {
-            println!("【 モンスター 】の勝利！");
+        turn_condition = !turn_condition;
+
+        if mut_brave.spec.hit_point <= 0 {
+            println!("魔物【 {} 】に敗北しました。\n", mut_monster.name);
             break;
-        } else {
-            println!("【 勇者 】の勝利！");
+        }
+        if mut_monster.spec.hit_point <= 0 {
+            println!("勇者【 {} 】の勝利です！\n", mut_brave.name);
             break;
         }
     }

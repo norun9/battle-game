@@ -9,11 +9,11 @@ pub struct Brave {
 }
 
 impl common::Common for Brave {
-    fn new() -> &'static mut Brave {
+    fn new() -> Brave {
         let mut name = String::new();
-        println!("Please decide the name of brave");
+        println!("【 勇者 】の名前を決めてください。\n");
         std::io::stdin().read_line(&mut name).ok();
-        println!("Brave {} Defeat the monster!!", name);
+        println!("");
 
         // Magic constructor :
         let attribute = Self::get_attribute();
@@ -25,7 +25,7 @@ impl common::Common for Brave {
         // Spec constructor :
         let spec: common::Spec = common::Spec::new(attack);
 
-        &mut Brave {
+        Brave {
             name,
             spec,
             attribute: attribute.to_string(),
