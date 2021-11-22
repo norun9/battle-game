@@ -20,9 +20,14 @@ pub struct Spec {
 }
 
 impl Spec {
-    pub fn new(attack: Attack) -> Self {
+    pub fn new(attack: Attack, is_brave: bool) -> Self {
         let magic_point: i32 = rand::thread_rng().gen_range(60, 151);
-        let hit_point: i32 = rand::thread_rng().gen_range(100, 5001);
+        let mut hit_point: i32;
+        if is_brave {
+            hit_point = rand::thread_rng().gen_range(100, 5001);
+        } else {
+            hit_point = rand::thread_rng().gen_range(100, 4301);
+        }
         let evasion: Vec<bool> = vec![true, false, false, true, false, false, true, false, false];
         Spec {
             hit_point,
@@ -41,7 +46,7 @@ pub struct Attack {
 
 impl Attack {
     pub fn new(magic: Magic) -> Self {
-        let power: i32 = rand::thread_rng().gen_range(100, 500);
+        let power: i32 = rand::thread_rng().gen_range(150, 221);
         Attack { power, magic }
     }
 }
@@ -65,11 +70,11 @@ enum MagicType {
 impl Magic {
     pub fn new(attribute: &str) -> Self {
         let magic_type: MagicType = match attribute {
-            "fire" => MagicType::Fire(String::from("Fire"), 1500, 30), // TODO: 属性相性攻撃力UP
-            "water" => MagicType::Frozen(String::from("Blizzard"), 1500, 30),
-            "thunder" => MagicType::Thunder(String::from("Thunder"), 1500, 30),
-            "wind" => MagicType::Wind(String::from("Aero"), 1500, 30),
-            _ => MagicType::Fire(String::from("Fire"), 1500, 30),
+            "fire" => MagicType::Fire(String::from("Fire"), 250, 60), // TODO: 属性相性攻撃力UP
+            "water" => MagicType::Frozen(String::from("Blizzard"), 250, 60),
+            "thunder" => MagicType::Thunder(String::from("Thunder"), 250, 60),
+            "wind" => MagicType::Wind(String::from("Aero"), 250, 60),
+            _ => MagicType::Fire(String::from("Fire"), 250, 60),
         };
 
         let (name, consume_magic_point_amount, magic_power) = match magic_type {

@@ -19,7 +19,7 @@ impl common::Common for Monster {
         let attack: common::Attack = common::Attack::new(magic);
 
         // Spec constructor :
-        let spec: common::Spec = common::Spec::new(attack);
+        let spec: common::Spec = common::Spec::new(attack, false);
 
         let monster_names = [
             "バハムート",

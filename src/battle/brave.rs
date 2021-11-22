@@ -23,7 +23,7 @@ impl common::Common for Brave {
         let attack: common::Attack = common::Attack::new(magic);
 
         // Spec constructor :
-        let spec: common::Spec = common::Spec::new(attack);
+        let spec: common::Spec = common::Spec::new(attack, true);
 
         println!("勇者【{}】の属性は{}", name, attribute);
         println!("勇者【{}】の体力は{}", name, spec.hit_point);
