@@ -1,20 +1,9 @@
-use std::env;
-
 mod battle;
+use battle::Common;
 
 fn main() {
-    let args: Vec<String> = env::args().collect();
-    let select: &str;
-    if args.len() > 1 {
-        select = &args[1]
-    } else {
-        select = "nothing"
-    }
-    match select {
-        "battle" => {
-            let monster: battle::Monster = battle::Monster::new();
-            println!("{:?}", monster);
-        }
-        _ => println!("Something else!"),
-    }
+    let mut brave: battle::Brave = Common::new();
+    println!("{:?}", brave);
+    let mut monster: battle::Monster = Common::new();
+    println!("{:?}", monster);
 }
