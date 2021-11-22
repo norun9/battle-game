@@ -11,7 +11,7 @@ pub struct Brave {
 impl common::Common for Brave {
     fn new() -> Brave {
         let mut name = String::new();
-        println!("【 勇者 】の名前を決めてください。\n");
+        println!("【勇者】の名前を決めてください。\n");
         std::io::stdin().read_line(&mut name).ok();
         println!("");
 
@@ -24,6 +24,14 @@ impl common::Common for Brave {
 
         // Spec constructor :
         let spec: common::Spec = common::Spec::new(attack);
+
+        println!("勇者【{}】の属性は{}", name, attribute);
+        println!("勇者【{}】の体力は{}", name, spec.hit_point);
+        println!("勇者【{}】の通常攻撃力は{}", name, spec.attack.power);
+        println!(
+            "勇者【{}】の魔法攻撃力は{}\n",
+            name, spec.attack.magic.power
+        );
 
         Brave {
             name,

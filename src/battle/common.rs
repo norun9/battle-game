@@ -22,7 +22,7 @@ pub struct Spec {
 impl Spec {
     pub fn new(attack: Attack) -> Self {
         let magic_point: i32 = rand::thread_rng().gen_range(60, 151);
-        let hit_point: i32 = rand::thread_rng().gen_range(100, 100001);
+        let hit_point: i32 = rand::thread_rng().gen_range(100, 5001);
         let evasion: Vec<bool> = vec![true, false, false, true, false, false, true, false, false];
         Spec {
             hit_point,

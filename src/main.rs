@@ -19,20 +19,27 @@ fn main() {
         if turn_condition {
             // 勇者ターン
             turn = String::from("brave");
-            let mut command = String::new();
             loop {
-                println!("攻撃方法を選択してください。【 attack 】or【 magic 】\n");
+                println!("攻撃方法を選択してください。【attack】|【magic】\n");
+                let mut command = String::new();
                 std::io::stdin().read_line(&mut command).ok();
-                println!("");
-                assert_eq!(command, "attack");
+                command = command.trim_right().to_owned(); // 改行コード削除
                 if command != "" {
                     if command == "attack" {
                         is_attack = true;
+                        break;
                     }
                     if command == "magic" {
+                        if mut_brave.spec.magic_point
+                            < mut_brave.spec.attack.magic.consume_magic_point_amount
+                        {
+                            println!("MPが足りないので通常攻撃にシフトします。");
+                            is_attack = true;
+                            break;
+                        }
                         is_magic = true;
+                        break;
                     }
-                    break;
                 }
             }
         } else {
@@ -40,11 +47,18 @@ fn main() {
             turn = String::from("monster");
             let commands = ["attack", "magic"];
             let number: usize = rand::thread_rng().gen_range(0, 2);
-            if commands[number] == "attack" {
+            // MPが足りない場合は通常攻撃のみ実行
+            if mut_monster.spec.magic_point
+                < mut_monster.spec.attack.magic.consume_magic_point_amount
+            {
                 is_attack = true;
-            }
-            if commands[number] == "magic" {
-                is_magic = true;
+            } else {
+                if commands[number] == "attack" {
+                    is_attack = true;
+                }
+                if commands[number] == "magic" {
+                    is_magic = true;
+                }
             }
         }
 
