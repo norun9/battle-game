@@ -10,7 +10,7 @@ pub struct Monster {
 }
 
 impl common::Common for Monster {
-    fn new() -> Monster {
+    fn new() -> &'static mut Monster {
         // Magic constructor :
         let attribute = Self::get_attribute();
         let magic = common::Magic::new(attribute);
@@ -29,6 +29,10 @@ impl common::Common for Monster {
             attribute: attribute.to_string(),
         };
         println!("{} has appeared!!", monster.name);
-        monster
+        &mut monster
     }
+}
+
+impl Monster {
+    pub fn action() {}
 }

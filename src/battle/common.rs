@@ -1,6 +1,15 @@
 extern crate rand;
 use rand::Rng;
 
+use super::brave;
+use super::monster;
+
+pub struct Action {
+    pub turn: String,
+    pub attack: Option<i32>,
+    pub magic: Option<Magic>,
+}
+
 pub trait Common {
     fn get_attribute<'a>() -> &'a str {
         let attributes = ["fire", "frozon", "thunder", "wind"];
@@ -8,7 +17,79 @@ pub trait Common {
         attributes[number]
     }
 
-    fn new() -> Self;
+    fn new() -> &'static mut Self;
+
+    fn action<'a>(
+        action: Action,
+        brave: &'a mut brave::Brave,
+        monster: &'a mut monster::Monster,
+    ) -> (&'a mut brave::Brave, &'a mut monster::Monster) {
+        if action.turn == "monster" {
+            match action.attack {
+                None => {
+                    println!(
+                        "{} is selected {} magic",
+                        monster.name, monster.spec.attack.magic.name
+                    )
+                }
+                Some(attack) => {
+                    // 勇者のhit pointにモンスターのパワーをマイナス(攻撃)
+                    brave.spec.hit_point -= attack; // attack is power
+                    if brave.spec.hit_point <= 0 {
+                        // 勇者負け
+                    }
+                }
+            }
+            match action.magic {
+                None => {
+                    println!("{} is selected attack", monster.name)
+                }
+                Some(magic) => {
+                    // mpより消費mpの方が大きければエラー
+                    if monster.spec.magic_point < magic.consume_magic_point_amount {
+                        // TODO: エラー
+                    }
+                    // 勇者のhit pointにモンスターの魔法パワーをマイナス(魔法攻撃)
+                    brave.spec.hit_point -= monster.spec.attack.magic.power;
+                    // mpを消費する
+                    monster.spec.magic_point -=
+                        monster.spec.attack.magic.consume_magic_point_amount;
+                }
+            }
+        } else {
+            match action.attack {
+                None => {
+                    println!(
+                        "{} is selected {} magic",
+                        brave.name, brave.spec.attack.magic.name
+                    )
+                }
+                Some(attack) => {
+                    // モンスターのhit pointに勇者のパワーをマイナス(攻撃)
+                    monster.spec.hit_point -= attack; // attack is power
+                    if monster.spec.hit_point <= 0 {
+                        // モンスター負け
+                    }
+                }
+            }
+            match action.magic {
+                None => {
+                    println!("{} is selected attack", brave.name)
+                }
+                Some(magic) => {
+                    // mpより消費mpの方が大きければエラー
+                    if brave.spec.magic_point < magic.consume_magic_point_amount {
+                        // TODO: エラー
+                    }
+                    // モンスターのhit pointにモンスターの魔法パワーをマイナス(魔法攻撃)
+                    monster.spec.hit_point -= magic.power;
+                    // mpを消費する
+                    brave.spec.magic_point -= magic.consume_magic_point_amount;
+                }
+            }
+        }
+        return (brave, monster);
+    }
 }
 
 #[derive(Debug)]
@@ -51,7 +132,7 @@ impl Attack {
 pub struct Magic {
     pub name: String,
     pub consume_magic_point_amount: i32, // 消費するMP量
-    pub magic_power: i32,                // 魔法攻撃力
+    pub power: i32,                      // 魔法攻撃力
 }
 
 #[derive(Debug)]
@@ -90,7 +171,7 @@ impl Magic {
         Magic {
             name,
             consume_magic_point_amount,
-            magic_power,
+            power: magic_power,
         }
     }
 }
